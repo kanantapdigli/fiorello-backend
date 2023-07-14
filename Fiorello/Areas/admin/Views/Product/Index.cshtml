@@ -1,0 +1,149 @@
+﻿@using Fiorello.Areas.admin.ViewModels.Product
+@using Fiorello.Enums
+@model ProductIndexVM
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+
+    <div class="card shadow">
+        <div class="card-body">
+            <h1 class="h3 mb-2 text-gray-800">Search</h1>
+            <form method="get" asp-action="index" asp-controller="product">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="Title"></label>
+                            <input asp-for="Title" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="MinPrice"></label>
+                            <input asp-for="MinPrice" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="MaxPrice"></label>
+                            <input asp-for="MaxPrice" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="MinStock"></label>
+                            <input asp-for="MinStock" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="MaxStock"></label>
+                            <input asp-for="MaxStock" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="CategoriesIds"></label>
+                            <select multiple="multiple" asp-for="CategoriesIds" asp-items="Model.Categories" class="form-control">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="ProductTypes"></label>
+                            <select multiple="multiple" asp-for="ProductTypes" asp-items="@Html.GetEnumSelectList<ProductType>()" class="form-control">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="CreatedAtStart"></label>
+                            <input type="date" asp-for="CreatedAtStart" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label asp-for="CreatedAtEnd"></label>
+                            <input type="date" asp-for="CreatedAtEnd" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mt-5 mb-4">
+        <div class="card-body">
+            <h1 class="h3 mb-2 mt-3 text-gray-800">Products</h1>
+            <a class="btn btn-primary m-3" asp-action="create" asp-controller="product">Create</a>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock Quantity</th>
+                            <th>Type</th>
+                            <th>Created At</th>
+                            <th>Modified At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        @foreach (var product in Model.Products)
+                        {
+                            <tr>
+                                <td>
+                                    @if (product.ProductPhotos is not null)
+                                    {
+                                        @foreach (var photo in product.ProductPhotos)
+                                        {
+                                            @if (photo.IsMain)
+                                            {
+                                                <img class="w-25" src="~/assets/img/@photo.Name">
+                                            }
+                                        }
+                                    }
+                                </td>
+                                <td>@product.Title</td>
+                                <td>@product.ProductCategory.Name</td>
+                                <td>@product.Price</td>
+                                <td>@product.Stock</td>
+                                <td>@product.Type</td>
+                                <td>@product.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                                <td>@product.ModifiedAt?.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                                <td>
+                                    <a asp-action="update" asp-controller="product" asp-route-id="@product.Id" class="btn btn-primary">Update</a>
+                                    <a onclick="return DeleteConfirmation()" asp-action="delete" asp-controller="product" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
+                                    <a asp-action="details" asp-controller="product" asp-route-id="@product.Id" class="btn btn-info">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+@section Scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+    <script>
+        $(document).ready(function () {
+            $('#CategoriesIds').multiselect();
+            $('#ProductTypes').multiselect();
+        });
+    </script>
+    <script src="~/admin/js/search.js"></script>
+}

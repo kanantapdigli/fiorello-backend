@@ -1,0 +1,32 @@
+﻿@using Fiorello.Models
+@model List<Product>
+
+@foreach (var product in Model)
+{
+    <tr>
+        <td>
+            @if (product.ProductPhotos is not null)
+            {
+                @foreach (var photo in product.ProductPhotos)
+                {
+                    @if (photo.IsMain)
+                    {
+                        <img class="w-25" src="~/assets/img/@photo.Name">
+                    }
+                }
+            }
+        </td>
+        <td>@product.Title</td>
+        <td>@product.ProductCategory.Name</td>
+        <td>@product.Price</td>
+        <td>@product.Stock</td>
+        <td>@product.Type</td>
+        <td>@product.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")</td>
+        <td>@product.ModifiedAt?.ToString("dd.MM.yyyy HH:mm:ss")</td>
+        <td>
+            <a asp-action="update" asp-controller="product" asp-route-id="@product.Id" class="btn btn-primary">Update</a>
+            <a onclick="return DeleteConfirmation()" asp-action="delete" asp-controller="product" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
+            <a asp-action="details" asp-controller="product" asp-route-id="@product.Id" class="btn btn-info">Details</a>
+        </td>
+    </tr>
+}
